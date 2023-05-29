@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { MailerService } from '@nestjs-modules/mailer'
+import { MailerService } from '@nestjs-modules/mailer';
 import { sendMailDto } from './dto/send-mail.dto';
 import { ServeStaticModule } from '@nestjs/serve-static';
 
 @Injectable()
 export class MailService {
-    constructor(private mailerService: MailerService) {}
-    tickets = [];
-    ticketsHtml = (ticketsNeeded: number) => {
-        for(let i = 1; i <= ticketsNeeded; i++){
-            this.tickets.push(
-                `<tr style="border-bottom: 1px solid rgba(0,0,0,.05);">
+  constructor(private mailerService: MailerService) {}
+  tickets = [];
+  ticketsHtml = (ticketsNeeded: number) => {
+    for (let i = 1; i <= ticketsNeeded; i++) {
+      this.tickets.push(
+        `<tr style="border-bottom: 1px solid rgba(0,0,0,.05);">
                     <td valign="middle" width="85%" style="text-align:left; padding: 0 2em;">
                         <div class="product-entry">
                             <img src="cid:qr" alt="" style="width: 120px; max-width: 600px; height: auto; margin-bottom: 20px; display: block;">
@@ -24,24 +24,26 @@ export class MailService {
                     <td valign="middle" width="20%" style="text-align:left; padding: 0 2.5em;">
                         <span class="price" style="color: #000; font-size: 20px;">$0</span>
                     </td>
-                </tr>`
-            );
-        }
-    };
+                </tr>`,
+      );
+    }
+  };
 
-    sendMail(email, numberOfTickets): string{
-        this.ticketsHtml(numberOfTickets);
-        this.mailerService.sendMail({
-            to: email,
-            from: "no-reply@kaudalcultural.cl",
-            subject: "Ticket de Evento",
-            attachments: [{
-                filename: 'qr.jpeg',
-                path: __dirname +'/../../assets/img/qr.jpeg',
-                cid: 'qr'
-            }],
-            text: "TRIBUTO CIRCO Vol. 1",
-            html: `<!DOCTYPE html>
+  sendMail(email, numberOfTickets): string {
+    this.ticketsHtml(numberOfTickets);
+    this.mailerService.sendMail({
+      to: email,
+      from: 'no-reply@kaudalcultural.cl',
+      subject: 'Ticket de Evento',
+      attachments: [
+        {
+          filename: 'qr.jpeg',
+          path: __dirname + '/../../assets/img/qr.jpeg',
+          cid: 'qr',
+        },
+      ],
+      text: 'TRIBUTO CIRCO Vol. 1',
+      html: `<!DOCTYPE html>
             <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
             <head>
                 <meta charset="utf-8"> <!-- utf-8 works for most cases -->
@@ -370,8 +372,8 @@ export class MailService {
                 </div>
               </center>
             </body>
-            </html>`
-        })
-        return 'Mail enviado';
-    }
+            </html>`,
+    });
+    return 'Mail enviado';
+  }
 }

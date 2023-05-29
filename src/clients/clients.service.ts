@@ -7,15 +7,18 @@ import { createClientDto } from './dto/create-client.dto';
 
 @Injectable()
 export class ClientsService {
-    constructor(@InjectRepository(Client) private clientRepository: Repository<Client>, private mailSvc: MailService) {}
-    
-    createClient(client: createClientDto){
-        const newClient = this.clientRepository.create(client);
-        this.mailSvc.sendMail(client.email, client.numberOfTickets);
-        return this.clientRepository.save(newClient);
-    }
+  constructor(
+    @InjectRepository(Client) private clientRepository: Repository<Client>,
+    private mailSvc: MailService,
+  ) {}
 
-    getClients() {
-        return this.clientRepository.find();
-    }
+  createClient(client: createClientDto) {
+    const newClient = this.clientRepository.create(client);
+    this.mailSvc.sendMail(client.email, client.numberOfTickets);
+    return this.clientRepository.save(newClient);
+  }
+
+  getClients() {
+    return this.clientRepository.find();
+  }
 }

@@ -9,6 +9,6 @@ import { MailService } from 'src/mail/mail.service';
 @Module({
   imports: [TypeOrmModule.forFeature([Client]), MailModule],
   controllers: [ClientsController],
-  providers: [ClientsService, MailService]
+  providers: [ClientsService, MailService],
 })
 export class ClientsModule {}

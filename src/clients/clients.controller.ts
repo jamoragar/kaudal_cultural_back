@@ -5,16 +5,15 @@ import { Client } from './client.entity';
 
 @Controller('clients')
 export class ClientsController {
-    constructor(private clientService: ClientsService) {}
+  constructor(private clientService: ClientsService) {}
 
-    @Get()
-    getClients(): Promise<Client[]> {
-        return this.clientService.getClients();
-    }
+  @Get()
+  getClients(): Promise<Client[]> {
+    return this.clientService.getClients();
+  }
 
-    @Post()
-    createClient(@Body() newClient: createClientDto){
-        
-        return this.clientService.createClient(newClient)
-    }
+  @Post()
+  createClient(@Body() newClient: createClientDto) {
+    return this.clientService.createClient(newClient);
+  }
 }
