@@ -4,6 +4,7 @@ import { ClientsModule } from './clients/clients.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 //Entidades
 import { EventsModule } from './events/events.module';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { EventsModule } from './events/events.module';
     ClientsModule,
     MailModule,
     EventsModule,
+    CommonModule,
   ],
   controllers: [],
   providers: [],

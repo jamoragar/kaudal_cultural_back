@@ -1,4 +1,11 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { EventImage } from './event-image.entity';
 
 @Entity()
@@ -33,6 +40,7 @@ export class Event {
   //Queda pendiente la creacion de la imagen, ya que se debe relacionar a otra tabla...
   @OneToMany(() => EventImage, (eventImage) => eventImage.event, {
     cascade: true,
+    eager: true,
   })
   Imagenes?: EventImage[];
 
@@ -47,4 +55,22 @@ export class Event {
 
   @Column('boolean', { default: true })
   active;
+
+  @Column('varchar', { unique: true })
+  slug: string;
+
+  @BeforeInsert()
+  checkSlugInsert() {
+    if (!this.slug) {
+      this.slug = this.EventName;
+    }
+    this.slug = this.slug.toLowerCase().replaceAll(' ', '_');
+  }
+  @BeforeUpdate()
+  checkSlugUpdate() {
+    if (this.EventName) {
+      this.slug = this.EventName;
+    }
+    this.slug = this.slug.toLowerCase().replaceAll(' ', '_');
+  }
 }

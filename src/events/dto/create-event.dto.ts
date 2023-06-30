@@ -53,5 +53,8 @@ export class CreateEventDto {
   @IsArray()
   Tickets: Array<object>;
 
+  @IsString({ each: true })
+  @IsArray()
+  @IsOptional()
   Imagenes?: string[];
 }
