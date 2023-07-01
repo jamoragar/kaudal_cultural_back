@@ -5,9 +5,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 //Entidades
 import { EventsModule } from './events/events.module';
 import { CommonModule } from './common/common.module';
+import { FilesModule } from './files/files.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
@@ -22,6 +25,7 @@ import { CommonModule } from './common/common.module';
     MailModule,
     EventsModule,
     CommonModule,
+    FilesModule,
   ],
   controllers: [],
   providers: [],

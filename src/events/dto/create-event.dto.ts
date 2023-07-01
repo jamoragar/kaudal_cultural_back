@@ -6,10 +6,28 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  Min,
   Validate,
+  ValidateNested,
   isEmpty,
+  isString,
 } from 'class-validator';
 import { IsUnique } from '@youba/nestjs-dbvalidator';
+import { Type } from 'class-transformer';
+
+export class NestedTicketsPropertyDto {
+  @IsString()
+  @IsNotEmpty()
+  TipoTicket: string;
+
+  @IsNotEmpty()
+  @Min(0)
+  PrecioTicket: number;
+
+  @IsNotEmpty()
+  @Min(0)
+  CantidadTicketTipo: number;
+}
 
 export class CreateEventDto {
   @IsString()
@@ -31,9 +49,6 @@ export class CreateEventDto {
   @IsNotEmpty()
   Description: string;
 
-  @IsDateString()
-  EndDate: string;
-
   @IsString()
   @IsNotEmpty()
   @Validate(IsUnique, [{ table: 'event', column: 'EventName' }])
@@ -42,19 +57,22 @@ export class CreateEventDto {
   @IsString()
   Region: string;
 
-  @IsDateString()
-  @IsNotEmpty()
-  StartDate: string;
-
   @IsString()
   @IsNotEmpty()
   Sumary: string;
 
   @IsArray()
-  Tickets: Array<object>;
+  @IsNotEmpty()
+  @ValidateNested({ each: true })
+  @Type(() => NestedTicketsPropertyDto)
+  Tickets: Array<NestedTicketsPropertyDto>;
 
   @IsString({ each: true })
   @IsArray()
   @IsOptional()
   Imagenes?: string[];
+
+  @IsArray()
+  @IsNotEmpty()
+  Dates: Array<{ StartDate: string; EndDate: string }>;
 }

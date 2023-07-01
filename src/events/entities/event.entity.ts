@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { EventImage } from './event-image.entity';
+import { EventDates } from './event-dates.entity';
 
 @Entity()
 export class Event {
@@ -22,8 +23,8 @@ export class Event {
   @Column('varchar')
   Address: string;
 
-  @Column('varchar')
-  Categories: string[];
+  @Column('json')
+  Categories: Array<string>;
 
   @Column('varchar')
   City: string;
@@ -34,9 +35,6 @@ export class Event {
   @Column('varchar')
   Description: string;
 
-  @Column('datetime')
-  EndDate: string;
-
   //Queda pendiente la creacion de la imagen, ya que se debe relacionar a otra tabla...
   @OneToMany(() => EventImage, (eventImage) => eventImage.event, {
     cascade: true,
@@ -44,14 +42,14 @@ export class Event {
   })
   Imagenes?: EventImage[];
 
+  @OneToMany(() => EventDates, (eventDate) => eventDate.event, {
+    cascade: true,
+    eager: true,
+  })
+  Dates: EventDates[];
+
   @Column('varchar')
   Region: string;
-
-  @Column('datetime')
-  StartDate: string;
-
-  @Column('json')
-  Tickets: Array<object>;
 
   @Column('boolean', { default: true })
   active;

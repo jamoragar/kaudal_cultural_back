@@ -12,6 +12,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
 import { EventImage } from './entities/event-image.entity';
+import { EventDates } from './entities/event-dates.entity';
+import { EventTickets } from './entities/event-tickets.entity';
 
 @Injectable()
 export class EventsService {
@@ -22,15 +24,26 @@ export class EventsService {
     private readonly eventRepository: Repository<Event>,
     @InjectRepository(EventImage)
     private readonly eventImageRepository: Repository<EventImage>,
+    @InjectRepository(EventDates)
+    private readonly eventDatesRepository: Repository<EventDates>,
+    @InjectRepository(EventTickets)
+    private readonly eventTicketsRepository: Repository<EventTickets>,
     private readonly dataSource: DataSource,
   ) {}
 
   async create(event: CreateEventDto) {
-    const { Imagenes = [], ...eventDetails } = event;
+    const { Imagenes = [], Dates = [], Tickets = [], ...eventDetails } = event;
+    console.log(Tickets);
     const newEvent = this.eventRepository.create({
       ...eventDetails,
       Imagenes: Imagenes.map((imagen) =>
         this.eventImageRepository.create({ url: imagen }),
+      ),
+      Dates: Dates.map((date) =>
+        this.eventDatesRepository.create({
+          StartDate: date.StartDate,
+          EndDate: date.EndDate,
+        }),
       ),
     });
     await this.eventRepository.save(newEvent);
@@ -64,7 +77,7 @@ export class EventsService {
   }
 
   async update(id: string, updateEventDto: UpdateEventDto) {
-    const { Imagenes, ...toUpdate } = updateEventDto;
+    const { Imagenes, Dates, Tickets, ...toUpdate } = updateEventDto;
 
     const event = await this.eventRepository.preload({
       id,
@@ -83,6 +96,22 @@ export class EventsService {
         await queryRunner.manager.delete(EventImage, { event: { id } });
         event.Imagenes = Imagenes.map((imagen) =>
           this.eventImageRepository.create({ url: imagen }),
+        );
+      }
+      if (Dates && Tickets) {
+        await queryRunner.manager.delete(EventDates, { event: { id } });
+        event.Dates = Dates.map((date) =>
+          this.eventDatesRepository.create({
+            StartDate: date.StartDate,
+            EndDate: date.EndDate,
+            Tickets: Tickets.map((ticket) =>
+              this.eventTicketsRepository.create({
+                TipoTicket: ticket.TipoTicket,
+                PrecioTicket: ticket.PrecioTicket,
+                CantidadTicketTipo: ticket.CantidadTicketTipo,
+              }),
+            ),
+          }),
         );
       }
 
