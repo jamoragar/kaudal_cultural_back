@@ -40,6 +40,9 @@ export class FilesController {
     }),
   )
   uploadEventImage(@UploadedFile() file: Express.Multer.File) {
+    console.log('entramos...');
+    console.log(file);
+
     if (!file) {
       throw new BadRequestException('Make sure that the file is an image');
     }

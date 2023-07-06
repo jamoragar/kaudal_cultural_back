@@ -33,7 +33,6 @@ export class EventsService {
 
   async create(event: CreateEventDto) {
     const { Imagenes = [], Dates = [], Tickets = [], ...eventDetails } = event;
-    console.log(Tickets);
     const newEvent = this.eventRepository.create({
       ...eventDetails,
       Imagenes: Imagenes.map((imagen) =>
@@ -43,6 +42,13 @@ export class EventsService {
         this.eventDatesRepository.create({
           StartDate: date.StartDate,
           EndDate: date.EndDate,
+          Tickets: Tickets.map((ticket) =>
+            this.eventTicketsRepository.create({
+              TipoTicket: ticket.TipoTicket,
+              PrecioTicket: ticket.PrecioTicket,
+              CantidadTicketTipo: ticket.CantidadTicketTipo,
+            }),
+          ),
         }),
       ),
     });
